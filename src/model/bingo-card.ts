@@ -16,9 +16,6 @@ export class BingoCard {
         const shuffledData = BingoSquare.ALL_DATA.sort(() => 0.5 - Math.random()).slice(0, 25);        
         for (let i = 0; i < 5; i++) {
             for (let j = 0; j < 5; j++) {
-                if (i == 2 && j == 2) {
-                    continue;
-                }
                 squares.push(new BingoSquare(i, j, shuffledData[i * 5 + j]));
             }
         }
