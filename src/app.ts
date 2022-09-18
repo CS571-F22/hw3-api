@@ -1,7 +1,8 @@
 
 import express from 'express';
 import { format } from 'path';
-import { BingoCard } from './model/bingo-card';
+
+import { BadgerBook } from './model/badger-book';
 
 const errorHandler = require('errorhandler');
 const morgan = require("morgan");
@@ -36,8 +37,8 @@ app.use(bodyParser.json());
 // Request Throttler
 app.set('trust proxy', 1);
 const limiter = rateLimit({
-  windowMs: 30 * 1000, // 30 seconds
-  max: 1000 // limit each IP to 1000 requests per windowMs (30 seconds)
+  windowMs: 60 * 1000, // 1 minute
+  max: 500 // limit each IP to 500 requests per windowMs (minute)
 });
 app.use(limiter);
 
@@ -48,26 +49,26 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/api/bingo', (req, res) => {
-  res.send(BingoCard.constructRandom());
+app.get('/api/book', (req, res) => {
+  res.send(BadgerBook.constructRandom());
 });
 
-const DEFAULT_NUM_BINGOS = 3;
-app.get('/api/bingos', (req, res) => {
-    let num_bingos = DEFAULT_NUM_BINGOS;
+const DEFAULT_NUM_BOOKS = 4;
+app.get('/api/books', (req, res) => {
+    let num_books = DEFAULT_NUM_BOOKS;
     if(req.query.amount) {
         const amount = parseInt(req.query.amount as string);
         if(amount < 0) { // assholes
-            num_bingos = 0;
-        } else if (amount > 10) { // malicious assholes
-            num_bingos = 10;
+            num_books = 0;
+        } else if (amount > 50) { // malicious assholes
+            num_books = 50;
         } else {
-            num_bingos = amount;
+            num_books = amount;
         }
     }
-    const bingos = []
-    for(let i = 0; i < num_bingos; i++) { bingos.push(BingoCard.constructRandom()); }
-    res.send(bingos);
+    const books = []
+    for(let i = 0; i < num_books; i++) { books.push(BadgerBook.constructRandom()); }
+    res.send(books);
 });
 
 // Error Handling
